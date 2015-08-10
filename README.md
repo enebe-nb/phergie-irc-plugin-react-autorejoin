@@ -2,6 +2,8 @@
 
 [Phergie](http://github.com/phergie/phergie-irc-bot-react/) plugin for automatically rejoining IRC channels on PART or KICK event.
 
+[![Build Status](https://travis-ci.org/enebe-nb/phergie-irc-plugin-react-autorejoin.svg?branch=master)](https://travis-ci.org/enebe-nb/phergie-irc-plugin-react-autorejoin)
+
 ## Install
 
 The recommended method of installation is [through composer](http://getcomposer.org).
