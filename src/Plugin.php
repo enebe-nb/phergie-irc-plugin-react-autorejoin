@@ -77,14 +77,16 @@ class Plugin extends AbstractPlugin
     }
 
     /**
-     * Rejoins a channel in provided list of channels on a part event.
+     * Joins a channel if nickname and channel matches the own nickname
+     * and a channel in 'channels' configuration respectively.
      *
+     * @param string $nickname
      * @param \Phergie\Irc\Event\UserEventInterface $event
      * @param \Phergie\Irc\Bot\React\EventQueueInterface $queue
      */
-    public function onPartChannels(UserEventInterface $event, EventQueueInterface $queue)
+    public function joinOnMatch($nickname, UserEventInterface $event, EventQueueInterface $queue)
     {
-        if ($event->getNick() == $event->getConnection()->getNickname()
+        if ($nickname == $event->getConnection()->getNickname()
             && ($index = array_search($event->getSource(), $this->channels)) !== false) {
             $queue->ircJoin($this->channels[$index],
                 $this->keys ? $this->keys[$index] : null);
@@ -92,17 +94,24 @@ class Plugin extends AbstractPlugin
     }
 
     /**
-     * Rejoins a channel in provided list of channels on a kick event.
+     * Listen for part channel events.
+     *
+     * @param \Phergie\Irc\Event\UserEventInterface $event
+     * @param \Phergie\Irc\Bot\React\EventQueueInterface $queue
+     */
+    public function onPartChannels(UserEventInterface $event, EventQueueInterface $queue)
+    {
+        $this->joinOnMatch($event->getNick(), $event, $queue);
+    }
+
+    /**
+     * Listen for kick channel events.
      *
      * @param \Phergie\Irc\Event\UserEventInterface $event
      * @param \Phergie\Irc\Bot\React\EventQueueInterface $queue
      */
     public function onKickChannels(UserEventInterface $event, EventQueueInterface $queue)
     {
-        if ($event->getParams()['user'] == $event->getConnection()->getNickname()
-            && ($index = array_search($event->getSource(), $this->channels)) !== false) {
-            $queue->ircJoin($this->channels[$index],
-                $this->keys ? $this->keys[$index] : null);
-        }
+        $this->joinOnMatch($event->getParams()['user'], $event, $queue);
     }
 }
