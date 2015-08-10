@@ -1,0 +1,30 @@
+{
+    "name": "enebe-nb/phergie-irc-plugin-react-autorejoin",
+    "description": "Phergie plugin for automatically rejoining IRC channels on PART or KICK event.",
+    "keywords": [ "irc", "bot", "react", "plugin" ],
+    "license": "BSD-2-Clause",
+    "support": {
+        "issues": "https://github.com/enebe-nb/phergie-irc-plugin-react-autorejoin/issues",
+        "source": "https://github.com/enebe-nb/phergie-irc-plugin-react-autorejoin"
+    },
+    "require": {
+        "phergie/phergie-irc-bot-react": "~1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.6",
+        "phake/phake": "~2"
+    },
+    "suggest": {
+        "phergie/phergie-irc-plugin-react-autojoin": "Automatically join channels after connection is established"
+    },
+    "autoload": {
+        "psr-4": {
+            "EnebeNb\\Phergie\\Plugin\\AutoRejoin\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EnebeNb\\Phergie\\Tests\\Plugin\\AutoRejoin\\": "tests"
+        }
+    }
+}
