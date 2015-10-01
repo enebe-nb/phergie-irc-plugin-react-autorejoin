@@ -8,8 +8,6 @@
 namespace EnebeNb\Phergie\Tests\Plugin\AutoRejoin;
 
 use Phake;
-use Phergie\Irc\Bot\React\EventQueueInterface;
-use Phergie\Irc\Event\UserEventInterface;
 use EnebeNb\Phergie\Plugin\AutoRejoin\Plugin;
 
 /**
@@ -26,7 +24,7 @@ class PluginTest extends \PHPUnit_Framework_TestCase
     public function testInstantiateWithoutChannels()
     {
         try {
-            $plugin = new Plugin(array());
+            $plugin = new Plugin([]);
             $this->fail('Expected exception was not thrown');
         } catch (\DomainException $e) {
             $this->assertSame('$config must contain a "channels" key', $e->getMessage());
@@ -40,33 +38,33 @@ class PluginTest extends \PHPUnit_Framework_TestCase
      */
     public function dataProviderRejoinChannels()
     {
-        $data = array();
+        $data = [];
 
         // Single Channel, no keys
-        $data[] = array(
-            array(
+        $data[] = [
+            [
                 'channels' => '#channel1',
-            ),
+            ],
             null,
-        );
+        ];
 
         // Many Channels string, keys string
-        $data[] = array(
-            array(
+        $data[] = [
+            [
                 'channels' => '#channel1,#channel2',
                 'keys' => 'key1,#key2',
-            ),
+            ],
             'key1',
-        );
+        ];
 
         // Many Channels array, keys array
-        $data[] = array(
-            array(
-                'channels' => array('#channel1', '#channel2'),
-                'keys' => array('key1', 'key2'),
-            ),
-            'key1'
-        );
+        $data[] = [
+            [
+                'channels' => [ '#channel1', '#channel2' ],
+                'keys' => [ 'key1', 'key2' ],
+            ],
+            'key1',
+        ];
 
         return $data;
     }
@@ -81,7 +79,7 @@ class PluginTest extends \PHPUnit_Framework_TestCase
     public function testRejoinChannels(array $config, $key)
     {
         $connection = $this->getMockConnection('mynickname');
-        $event = $this->getMockUserEvent('mynickname','#channel1', $connection);
+        $event = $this->getMockUserEvent('mynickname', '#channel1', $connection);
         $queue = Phake::mock('\Phergie\Irc\Bot\React\EventQueueInterface');
         $plugin = new Plugin($config);
         $plugin->onPartChannels($event, $queue);
@@ -99,7 +97,7 @@ class PluginTest extends \PHPUnit_Framework_TestCase
     public function testDontRejoinChannelsOnOtherUser(array $config, $key)
     {
         $connection = $this->getMockConnection('mynickname');
-        $event = $this->getMockUserEvent('othernickname','#channel1', $connection);
+        $event = $this->getMockUserEvent('othernickname', '#channel1', $connection);
         $queue = Phake::mock('\Phergie\Irc\Bot\React\EventQueueInterface');
         $plugin = new Plugin($config);
         $plugin->onPartChannels($event, $queue);
@@ -117,7 +115,7 @@ class PluginTest extends \PHPUnit_Framework_TestCase
     public function testDontRejoinChannelsOnOtherChannel(array $config, $key)
     {
         $connection = $this->getMockConnection('mynickname');
-        $event = $this->getMockUserEvent('mynickname','#otherchannel', $connection);
+        $event = $this->getMockUserEvent('mynickname', '#otherchannel', $connection);
         $queue = Phake::mock('\Phergie\Irc\Bot\React\EventQueueInterface');
         $plugin = new Plugin($config);
         $plugin->onPartChannels($event, $queue);
@@ -132,17 +130,17 @@ class PluginTest extends \PHPUnit_Framework_TestCase
      */
     public function dataProviderGetSubscribedEvents()
     {
-        return array(
-            array(
-                array(
+        return [
+            [
+                [
                     'channels' => '#channel1',
-                ),
-                array(
+                ],
+                [
                     'irc.received.part' => 'onPartChannels',
                     'irc.received.kick' => 'onKickChannels',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -169,11 +167,11 @@ class PluginTest extends \PHPUnit_Framework_TestCase
         Phake::when($mock)->getNick()->thenReturn($nickname);
         Phake::when($mock)->getSource()->thenReturn($channel);
         Phake::when($mock)->getConnection()->thenReturn($connection);
-        Phake::when($mock)->getParams()->thenReturn(array(
+        Phake::when($mock)->getParams()->thenReturn([
             'channel' => $channel,
             'channels' => $channel,
             'user' => $nickname,
-        ));
+        ]);
         return $mock;
     }
 

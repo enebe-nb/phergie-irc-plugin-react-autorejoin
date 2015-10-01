@@ -70,10 +70,10 @@ class Plugin extends AbstractPlugin
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
                 'irc.received.part' => 'onPartChannels',
                 'irc.received.kick' => 'onKickChannels',
-            );
+            ];
     }
 
     /**

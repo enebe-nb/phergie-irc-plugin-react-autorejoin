@@ -6,9 +6,13 @@ php:
   - 5.6
   - hhvm
 
+before_install:
+  - wget http://get.sensiolabs.org/php-cs-fixer.phar
+
 before_script:
   - composer self-update
   - composer install
 
 script:
   - ./vendor/bin/phpunit --coverage-text
+  - php php-cs-fixer.phar fix -v --dry-run
